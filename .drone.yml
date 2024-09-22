@@ -35,7 +35,7 @@ steps:
         - pwd
         - mkdir -p server
         - rm -rf ./server/*
-        - echo "$N_USER@$N_HOST:$N_PATH/*"
+        - echo "${N_USER}@${N_HOST}:${N_PATH}/*"
         - scp -r $N_USER@$N_HOST:$N_PATH/* /www/wwwroot/pageplug/server
         - cd server
         - ls -al
