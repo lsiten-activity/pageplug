@@ -24,18 +24,15 @@ steps:
       port: 22
       command_timeout: 2m
       envs:
-        NAS_USER:
-          from_secret: n_user
-        NAS_HOST:
-          from_secret: n_ip
-        NAS_PATH: /volume2/docker/drone/server-01/drone-runner-docker/apps/java/run-script
+        - n_user
+        - n_ip
       script:
         - cd /www/wwwroot/pageplug/
         - pwd
         - mkdir -p server
         - rm -rf ./server/*
-        - echo "$NAS_USER@$NAS_HOST:$NAS_PATH/*"
-        - scp -r $NAS_USER@$NAS_HOST:$NAS_PATH/pageplug/* /www/wwwroot/pageplug/server
+        - echo "$NAS_USER@$NAS_HOST:/volume2/docker/drone/server-01/drone-runner-docker/apps/java/run-script/"
+        - scp -r $NAS_USER@$NAS_HOST:/volume2/docker/drone/server-01/drone-runner-docker/apps/java/run-script/pageplug/* /www/wwwroot/pageplug/server
         - cd server
         - ls -al
 trigger:
