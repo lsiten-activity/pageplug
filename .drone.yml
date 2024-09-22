@@ -1,8 +1,7 @@
 kind: pipeline
 type: docker
 name: 后端服务
-clone:
-  disable: true
+
 volumes:
   - name: maven-cache
     host:
