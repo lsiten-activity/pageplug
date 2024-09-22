@@ -63,7 +63,6 @@ server:
     from_secret: n_user
   password:
     from_secret: n_pw
-
 steps:
   - name: 后端项目
     environment:
@@ -75,6 +74,6 @@ steps:
     commands:
       - cd $N_PATH/pageplug/
       - pwd
-      - scp -r ./*  $S_USER@$S_IP:/www/wwwroot/pageplug/server
+      - scp -r ./*  $S_USER@$S_IP:/www/wwwroot/pageplug/server/
 depends_on:
   - 后端服务
