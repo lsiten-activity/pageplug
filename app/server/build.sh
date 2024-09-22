@@ -1,5 +1,4 @@
 #!/bin/bash
-
 # Remove previous dist directory
 rm -rf dist/
 
@@ -21,4 +20,8 @@ mkdir -p dist/plugins
 cp ./appsmith-server/target/server-1.0-SNAPSHOT.jar dist/
 
 # Copy all the plugins
-rsync -av --exclude "original-*.jar" ./appsmith-plugins/*/target/*.jar dist/plugins/
+# 查找所有 .jar 文件并排除 original-*.jar 文件
+find ./appsmith-plugins/*/target/ -name "*.jar" ! -name "original-*.jar" | \
+while read file; do
+    cp "$file" dist/plugins/
+done

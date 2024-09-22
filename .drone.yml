@@ -25,9 +25,6 @@ steps:
       - cd ./app/server
       - mvn clean compile
       - chmod +x build.sh
-      - apt-get update -y
-      - apt-get upgrade -y
-      - apt-get install -y rsync
       - ./build.sh -DskipTests
       - mkdir -p /app/build/${DRONE_REPO_NAME} && rm -rf /app/build/${DRONE_REPO_NAME}/*
       - mkdir -p /app/build/${DRONE_REPO_NAME} && cp -Rf ./dist /app/build/${DRONE_REPO_NAME};
