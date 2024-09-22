@@ -11,24 +11,24 @@ volumes:
     host:
       path: /volume2/docker/drone/server-01/drone-runner-docker/apps/java/run-script
 steps:
-  # - name: 构建
-  #   image: maven:3.8-openjdk-11
-  #   pull: if-not-exists
-  #   volumes:
-  #     - name: maven-cache
-  #       path: /root/.m2
-  #     - name: run-script
-  #       path: /app/build
-  #   commands:
-  #     - pwd
-  #     - ls -al
-  #     - cd ./app/server
-  #     - mvn clean compile
-  #     - chmod +x build.sh
-  #     - ./build.sh -DskipTests
-  #     - mkdir -p /app/build/${DRONE_REPO_NAME} && rm -rf /app/build/${DRONE_REPO_NAME}/*
-  #     - mkdir -p /app/build/${DRONE_REPO_NAME} && cp -Rf ./dist /app/build/${DRONE_REPO_NAME};
-  #     - mkdir -p /app/build/${DRONE_REPO_NAME} && cp -Rf ./scripts /app/build/${DRONE_REPO_NAME};
+  - name: 构建
+    image: maven:3.8-openjdk-11
+    pull: if-not-exists
+    volumes:
+      - name: maven-cache
+        path: /root/.m2
+      - name: run-script
+        path: /app/build
+    commands:
+      - pwd
+      - ls -al
+      - cd ./app/server
+      - mvn clean compile
+      - chmod +x build.sh
+      - ./build.sh -DskipTests
+      - mkdir -p /app/build/${DRONE_REPO_NAME} && rm -rf /app/build/${DRONE_REPO_NAME}/*
+      - mkdir -p /app/build/${DRONE_REPO_NAME} && cp -Rf ./dist /app/build/${DRONE_REPO_NAME};
+      - mkdir -p /app/build/${DRONE_REPO_NAME} && cp -Rf ./scripts /app/build/${DRONE_REPO_NAME};
   - name: 清空server
     image: appleboy/drone-ssh
     pull: if-not-exists
@@ -49,7 +49,6 @@ steps:
 trigger:
   branch:
     - main
-
 ---
 kind: pipeline
 type: docker
@@ -57,7 +56,7 @@ name: 部署项目
 clone:
   disable: true
 steps:
-  - name: 后端项目
+  - name: 拷贝项目文件
     image: appleboy/drone-ssh
     pull: if-not-exists
     environment:
@@ -83,5 +82,21 @@ steps:
         - cd $N_PATH/pageplug/
         - pwd
         - scp -r ./*  $S_USER@$S_IP:/www/wwwroot/pageplug/server/
+  - name: 开始部署
+    image: appleboy/drone-ssh
+    pull: if-not-exists
+    settings:
+      host:
+        from_secret: ssh_ip
+      username:
+        from_secret: ssh_user
+      password:
+        from_secret: ssh_pw
+      port: 22
+      command_timeout: 2m
+      script:
+        - cd /www/wwwroot/pageplug/server/
+        - chmod +x ./scripts/start-dev-server.sh
+        - ./scripts/start-dev-server.sh
 depends_on:
   - 后端服务
