@@ -1,0 +1,49 @@
+kind: pipeline
+type: docker
+name: 后端服务
+
+volumes:
+  - name: maven-cache
+    host:
+      path: /volume2/docker/drone/server-01/drone-runner-docker/maven-cache
+  - name: run-script
+    host:
+      path: /volume2/docker/drone/server-01/drone-runner-docker/apps/java/run-script
+
+steps:
+  - name: 构建
+    image: maven:3.8-openjdk-11
+    pull: if-not-exists
+    volumes:
+      - name: maven-cache
+        path: /root/.m2
+      - name: run-script
+        path: /app/build
+    commands:
+      - pwd
+      - cd /app/server
+      - mvn clean compile
+      - chmod +x build.sh
+      - ./build.sh -DskipTests
+      - mkdir -p /app/build/${DRONE_REPO_NAME} && rm -rf /app/build/${DRONE_REPO_NAME}/*
+      - mkdir -p /app/build/${DRONE_REPO_NAME} && cp -Rf ./dist /app/build/${DRONE_REPO_NAME};
+      - mkdir -p /app/build/${DRONE_REPO_NAME} && cp -Rf ./scripts /app/build/${DRONE_REPO_NAME};
+  - name: 部署项目
+    image: appleboy/drone-ssh
+    pull: if-not-exists
+    settings:
+      host:
+        from_secret: ssh_ip
+      username:
+        from_secret: ssh_user
+      password:
+        from_secret: ssh_pw
+      port: 22
+      command_timeout: 2m
+      script:
+        - cd /www/wwwroot/pageplug/
+        - pwd
+        - mkdir -p server
+trigger:
+  branch:
+    - main
