@@ -9,7 +9,7 @@ environment:
   N_PASSWORD:
     from_secret: n_pw
   N_HOST:
-    from_secret: n_user
+    from_secret: n_ip
 
 volumes:
   - name: maven-cache
