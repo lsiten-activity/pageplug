@@ -13,18 +13,11 @@ volumes:
 clone:
   disable: true
 
+
 steps:
-  - name: 部署项目
+  - name: 清空项目
     image: appleboy/drone-ssh
     pull: if-not-exists
-    environment:
-      N_USER:
-        from_secret: n_user
-      N_IP:
-        from_secret: n_ip
-      N_PW:
-        from_secret: n_pw
-      N_PATH: /volume2/docker/drone/server-01/drone-runner-docker/apps/java/run-script
     settings:
       host:
         from_secret: ssh_ip
@@ -34,18 +27,57 @@ steps:
         from_secret: ssh_pw
       port: 22
       command_timeout: 2m
-      envs:
-        - n_user
-        - n_ip
-        - n_path
-        - n_pw
       script:
         - cd /www/wwwroot/pageplug/
         - pwd
         - mkdir -p server
         - rm -rf ./server/*
-        - sshpass -p "$N_PW" scp -r $N_USER@$N_IP:$N_PATH/pageplug/* /www/wwwroot/pageplug/server
-        - cd server
+  - name: 拷贝脚本
+    image: appleboy/drone-ssh
+    pull: if-not-exists
+    environment:
+      S_USER:
+        from_secret: ssh_user
+      S_IP:
+        from_secret: ssh_ip
+      S_PW:
+        from_secret: ssh_pw
+      N_PATH: /volume2/docker/drone/server-01/drone-runner-docker/apps/java/run-script
+    settings:
+      host:
+        from_secret: n_ip
+      username:
+        from_secret: n_user
+      password:
+        from_secret: n_pw
+      port: 22
+      command_timeout: 2m
+      envs:
+        - s_user
+        - s_ip
+        - n_path
+        - s_pw
+      script:
+        - cd $N_PATH
+        - pwd
+        - ls -al
+        - rm -rf ./server/*
+        - sshpass -p $S_PW scp -r ./pageplug/* $S_USER@$S_IP:/www/wwwroot/pageplug/server/
+  - name: 部署项目
+    image: appleboy/drone-ssh
+    pull: if-not-exists
+    settings:
+      host:
+        from_secret: ssh_ip
+      username:
+        from_secret: ssh_user
+      password:
+        from_secret: ssh_pw
+      port: 22
+      command_timeout: 2m
+      script:
+        - cd /www/wwwroot/pageplug/server/
+        - pwd
         - ls -al
 trigger:
   branch:
