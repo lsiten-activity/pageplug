@@ -1,7 +1,8 @@
 kind: pipeline
 type: docker
 name: 后端服务
-
+clone:
+  disable: true
 volumes:
   - name: maven-cache
     host:
@@ -10,6 +11,24 @@ volumes:
     host:
       path: /volume2/docker/drone/server-01/drone-runner-docker/apps/java/run-script
 steps:
+  # - name: 构建
+  #   image: maven:3.8-openjdk-11
+  #   pull: if-not-exists
+  #   volumes:
+  #     - name: maven-cache
+  #       path: /root/.m2
+  #     - name: run-script
+  #       path: /app/build
+  #   commands:
+  #     - pwd
+  #     - ls -al
+  #     - cd ./app/server
+  #     - mvn clean compile
+  #     - chmod +x build.sh
+  #     - ./build.sh -DskipTests
+  #     - mkdir -p /app/build/${DRONE_REPO_NAME} && rm -rf /app/build/${DRONE_REPO_NAME}/*
+  #     - mkdir -p /app/build/${DRONE_REPO_NAME} && cp -Rf ./dist /app/build/${DRONE_REPO_NAME};
+  #     - mkdir -p /app/build/${DRONE_REPO_NAME} && cp -Rf ./scripts /app/build/${DRONE_REPO_NAME};
   - name: 清空server
     image: appleboy/drone-ssh
     pull: if-not-exists
@@ -34,7 +53,7 @@ trigger:
 ---
 kind: pipeline
 type: ssh
-name: 后端部署
+name: 部署项目
 clone:
   disable: true
 server:
@@ -46,18 +65,16 @@ server:
     from_secret: n_pw
 
 steps:
-  - name: 部署项目
+  - name: 后端项目
     environment:
-      N_USER:
-        from_secret: n_user
-      N_IP:
-        from_secret: n_ip
-      N_PW:
-        from_secret: n_pw
+      S_USER:
+        from_secret: ssh_user
+      S_IP:
+        from_secret: ssh_ip
       N_PATH: /volume2/docker/drone/server-01/drone-runner-docker/apps/java/run-script
     commands:
       - cd $N_PATH/pageplug/
       - pwd
-      - scp -r $N_USER@$N_IP:$N_PATH/pageplug/* /www/wwwroot/pageplug/server
+      - scp -r ./*  $S_USER@$S_IP:/www/wwwroot/pageplug/server
 depends_on:
   - 后端服务
