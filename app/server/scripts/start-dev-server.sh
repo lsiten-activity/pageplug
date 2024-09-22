@@ -22,4 +22,4 @@ setup_path=$root_path/server
 java_path="${setup_path}/java/jdk-17.0.8/bin/java"
 
 
-(cd dist && exec java_path -Dfile.encoding=UTF-8 -jar server-*.jar)
+(cd dist && exec $java_path -Dfile.encoding=UTF-8 -jar server-*.jar)
