@@ -22,6 +22,8 @@ steps:
         from_secret: n_user
       N_IP:
         from_secret: n_ip
+      N_PW:
+        from_secret: n_pw
       N_PATH: /volume2/docker/drone/server-01/drone-runner-docker/apps/java/run-script
     settings:
       host:
@@ -36,12 +38,13 @@ steps:
         - n_user
         - n_ip
         - n_path
+        - n_pw
       script:
         - cd /www/wwwroot/pageplug/
         - pwd
         - mkdir -p server
         - rm -rf ./server/*
-        - scp -r $N_USER@$N_IP:$N_PATH/pageplug/* /www/wwwroot/pageplug/server
+        - sshpass -p $N_PW scp -r $N_USER@$N_IP:$N_PATH/pageplug/* /www/wwwroot/pageplug/server
         - cd server
         - ls -al
 trigger:
