@@ -38,7 +38,7 @@ steps:
         - cd /www/wwwroot/pageplug/
         - pwd
         - mkdir -p server
-        - scp -r ${N_USER}:${N_PASSWORD}@${N_HOST}:$N_PATH/${DRONE_REPO_NAME}/* /www/wwwroot/pageplug/server
+        - scp -r $N_USER:$N_PASSWORD@$N_HOST:$N_PATH/$DRONE_REPO_NAME/* /www/wwwroot/pageplug/server
         - cd server
         - ls -al
 trigger:
