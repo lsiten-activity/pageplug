@@ -2,14 +2,6 @@ kind: pipeline
 type: docker
 name: 后端服务
 
-# 定义全局环境变量
-environment:
-  - N_USER:
-    from_secret: n_user
-  - N_HOST:
-    from_secret: n_ip
-  - N_PATH: /volume2/docker/drone/server-01/drone-runner-docker/apps/java/run-script
-
 volumes:
   - name: maven-cache
     host:
@@ -22,6 +14,13 @@ steps:
   - name: 部署项目
     image: appleboy/drone-ssh
     pull: if-not-exists
+    # 定义环境变量
+    environment:
+      N_USER:
+        from_secret: n_user
+      N_HOST:
+        from_secret: n_ip
+      N_PATH: /volume2/docker/drone/server-01/drone-runner-docker/apps/java/run-script
     settings:
       host:
         from_secret: ssh_ip
