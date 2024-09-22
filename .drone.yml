@@ -35,7 +35,7 @@ steps:
         - pwd
         - mkdir -p server
         - rm -rf ./server/*
-        - echo $NAS_USER@$NAS_HOST:$NAS_PATH/*
+        - echo "$NAS_USER@$NAS_HOST:$NAS_PATH/*"
         - scp -r $NAS_USER@$NAS_HOST:$NAS_PATH/* /www/wwwroot/pageplug/server
         - cd server
         - ls -al
