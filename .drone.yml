@@ -14,6 +14,12 @@ steps:
   - name: 部署项目
     image: appleboy/drone-ssh
     pull: if-not-exists
+    environment:
+      N_USER:
+        from_secret: n_user
+      N_IP:
+        from_secret: n_ip
+      N_PATH: /volume2/docker/drone/server-01/drone-runner-docker/apps/java/run-script
     settings:
       host:
         from_secret: ssh_ip
@@ -26,13 +32,14 @@ steps:
       envs:
         - n_user
         - n_ip
+        - n_path
       script:
         - cd /www/wwwroot/pageplug/
         - pwd
         - mkdir -p server
         - rm -rf ./server/*
-        - echo "$N_USER@$N_IP:/volume2/docker/drone/server-01/drone-runner-docker/apps/java/run-script/"
-        - scp -r $N_USER@$N_IP:/volume2/docker/drone/server-01/drone-runner-docker/apps/java/run-script/pageplug/* /www/wwwroot/pageplug/server
+        - echo "$N_USER@$N_IP:$N_PATH"
+        - scp -r $N_USER@$N_IP:$N_PATH/pageplug/* /www/wwwroot/pageplug/server
         - cd server
         - ls -al
 trigger:
