@@ -21,7 +21,8 @@ steps:
         path: /app/build
     commands:
       - pwd
-      - cd /app/server
+      - ls -al
+      - cd ./pageplug/app/server
       - mvn clean compile
       - chmod +x build.sh
       - ./build.sh -DskipTests
