@@ -52,28 +52,36 @@ trigger:
 
 ---
 kind: pipeline
-type: ssh
+type: docker
 name: 部署项目
 clone:
   disable: true
-server:
-  host:
-    from_secret: n_ip
-  user:
-    from_secret: n_user
-  password:
-    from_secret: n_pw
 steps:
   - name: 后端项目
+    image: appleboy/drone-ssh
+    pull: if-not-exists
     environment:
       S_USER:
         from_secret: ssh_user
       S_IP:
         from_secret: ssh_ip
       N_PATH: /volume2/docker/drone/server-01/drone-runner-docker/apps/java/run-script
-    commands:
-      - cd $N_PATH/pageplug/
-      - pwd
-      - scp -r ./*  $S_USER@$S_IP:/www/wwwroot/pageplug/server/
+    settings:
+      host:
+        from_secret: n_ip
+      username:
+        from_secret: n_user
+      password:
+        from_secret: n_pw
+      port: 22
+      command_timeout: 2m
+      envs:
+        - s_user
+        - s_ip
+        - n_path
+      script:
+        - cd $N_PATH/pageplug/
+        - pwd
+        - scp -r ./*  $S_USER@$S_IP:/www/wwwroot/pageplug/server/
 depends_on:
   - 后端服务
