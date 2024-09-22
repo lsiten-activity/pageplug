@@ -16,11 +16,11 @@ steps:
     pull: if-not-exists
     # 定义环境变量
     environment:
-      N_USER:
+      NAS_USER:
         from_secret: n_user
-      N_HOST:
+      NAS_HOST:
         from_secret: n_ip
-      N_PATH: /volume2/docker/drone/server-01/drone-runner-docker/apps/java/run-script
+      NAS_PATH: /volume2/docker/drone/server-01/drone-runner-docker/apps/java/run-script
     settings:
       host:
         from_secret: ssh_ip
@@ -30,13 +30,13 @@ steps:
         from_secret: ssh_pw
       port: 22
       command_timeout: 2m
-      script:
+      commands:
         - cd /www/wwwroot/pageplug/
         - pwd
         - mkdir -p server
         - rm -rf ./server/*
-        - echo "${N_USER}@${N_HOST}:${N_PATH}/*"
-        - scp -r $N_USER@$N_HOST:$N_PATH/* /www/wwwroot/pageplug/server
+        - echo $NAS_USER@$NAS_HOST:$NAS_PATH/*
+        - scp -r $NAS_USER@$NAS_HOST:$NAS_PATH/* /www/wwwroot/pageplug/server
         - cd server
         - ls -al
 trigger:
