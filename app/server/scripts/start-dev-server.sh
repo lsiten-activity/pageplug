@@ -15,4 +15,11 @@ if [ $IS_WSL ]; then
   _JAVA_OPTIONS="-Djava.net.preferIPv4Stack=true $_JAVA_OPTIONS"
 fi
 
-(cd dist && exec java -Dfile.encoding=UTF-8 -jar server-*.jar)
+root_path=$(cat /var/bt_setupPath.conf)
+setup_path=$root_path/server
+
+#java路径变量
+java_path="${setup_path}/java/jdk-17.0.8/bin/java"
+
+
+(cd dist && exec java_path -Dfile.encoding=UTF-8 -jar server-*.jar)
