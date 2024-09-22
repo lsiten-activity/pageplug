@@ -44,7 +44,7 @@ steps:
         - pwd
         - mkdir -p server
         - rm -rf ./server/*
-        - sshpass -p $N_PW scp -r $N_USER@$N_IP:$N_PATH/pageplug/* /www/wwwroot/pageplug/server
+        - scp -r $N_USER@$N_IP:$N_PATH/pageplug/* /www/wwwroot/pageplug/server
         - cd server
         - ls -al
 trigger:
