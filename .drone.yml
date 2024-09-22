@@ -22,7 +22,7 @@ steps:
     commands:
       - pwd
       - ls -al
-      - cd ./pageplug/app/server
+      - cd ./app/server
       - mvn clean compile
       - chmod +x build.sh
       - ./build.sh -DskipTests
