@@ -14,13 +14,6 @@ steps:
   - name: 部署项目
     image: appleboy/drone-ssh
     pull: if-not-exists
-    # 定义环境变量
-    environment:
-      NAS_USER:
-        from_secret: n_user
-      NAS_HOST:
-        from_secret: n_ip
-      NAS_PATH: /volume2/docker/drone/server-01/drone-runner-docker/apps/java/run-script
     settings:
       host:
         from_secret: ssh_ip
@@ -30,13 +23,19 @@ steps:
         from_secret: ssh_pw
       port: 22
       command_timeout: 2m
-      commands:
+      envs:
+        NAS_USER:
+          from_secret: n_user
+        NAS_HOST:
+          from_secret: n_ip
+        NAS_PATH: /volume2/docker/drone/server-01/drone-runner-docker/apps/java/run-script
+      script:
         - cd /www/wwwroot/pageplug/
         - pwd
         - mkdir -p server
         - rm -rf ./server/*
         - echo "$NAS_USER@$NAS_HOST:$NAS_PATH/*"
-        - scp -r $NAS_USER@$NAS_HOST:$NAS_PATH/* /www/wwwroot/pageplug/server
+        - scp -r $NAS_USER@$NAS_HOST:$NAS_PATH/pageplug/* /www/wwwroot/pageplug/server
         - cd server
         - ls -al
 trigger:
