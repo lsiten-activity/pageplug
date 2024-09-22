@@ -31,8 +31,8 @@ steps:
         - pwd
         - mkdir -p server
         - rm -rf ./server/*
-        - echo "$NAS_USER@$NAS_HOST:/volume2/docker/drone/server-01/drone-runner-docker/apps/java/run-script/"
-        - scp -r $NAS_USER@$NAS_HOST:/volume2/docker/drone/server-01/drone-runner-docker/apps/java/run-script/pageplug/* /www/wwwroot/pageplug/server
+        - echo "$N_USER@$N_IP:/volume2/docker/drone/server-01/drone-runner-docker/apps/java/run-script/"
+        - scp -r $N_USER@$N_IP:/volume2/docker/drone/server-01/drone-runner-docker/apps/java/run-script/pageplug/* /www/wwwroot/pageplug/server
         - cd server
         - ls -al
 trigger:
