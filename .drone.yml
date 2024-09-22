@@ -9,7 +9,8 @@ volumes:
   - name: run-script
     host:
       path: /volume2/docker/drone/server-01/drone-runner-docker/apps/java/run-script
-- name: 清空server
+steps:
+  - name: 清空server
     image: appleboy/drone-ssh
     pull: if-not-exists
     settings:
@@ -58,3 +59,5 @@ steps:
       - cd $N_PATH/pageplug/
       - pwd
       - scp -r $N_USER@$N_IP:$N_PATH/pageplug/* /www/wwwroot/pageplug/server
+depends_on:
+  - 后端服务
