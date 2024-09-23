@@ -1,6 +1,6 @@
 kind: pipeline
 type: docker
-name: 后端服务
+name: 服务构建
 
 volumes:
   - name: maven-cache
@@ -9,8 +9,11 @@ volumes:
   - name: run-script
     host:
       path: /volume2/docker/drone/server-01/drone-runner-docker/apps/java/run-script
+  - name: node-run-script
+    host:
+      path: /volume2/docker/drone/server-01/drone-runner-docker/apps/node/run-script
 steps:
-  - name: 构建
+  - name: 后端构建
     image: maven:3.8-openjdk-11
     pull: if-not-exists
     volumes:
@@ -29,7 +32,22 @@ steps:
       - mkdir -p /app/build/${DRONE_REPO_NAME} && cp -Rf ./dist /app/build/${DRONE_REPO_NAME};
       - mkdir -p /app/build/${DRONE_REPO_NAME} && cp -Rf ./scripts /app/build/${DRONE_REPO_NAME};
       - mkdir -p /app/build/${DRONE_REPO_NAME} && cp -Rf ./dev.env.template /app/build/${DRONE_REPO_NAME}/.env;
-  - name: 清空server
+  - name: 前端构建
+    image: node:18
+    pull: if-not-exists
+    volumes:
+      - name: node-run-script
+        path: /app/node/build
+    commands:
+      - pwd
+      - ls -al
+      - cd ./app/client
+      - rm -rf dist
+      - npm i yarn -g
+      - yarn build
+      - mkdir -p /app/node/build/${DRONE_REPO_NAME} && rm -rf /app/node/build/${DRONE_REPO_NAME}/*
+      - mkdir -p /app/node/build/${DRONE_REPO_NAME} && cp -Rf ./dist /app/node/build/${DRONE_REPO_NAME};
+  - name: 清空历史文件
     image: appleboy/drone-ssh
     pull: if-not-exists
     settings:
@@ -45,7 +63,9 @@ steps:
         - cd /www/wwwroot/pageplug/
         - pwd
         - mkdir -p server
+        - mkdir -p client
         - rm -rf ./server/*
+        - rm -rf ./client/*
 trigger:
   branch:
     - main
@@ -65,6 +85,7 @@ steps:
       S_IP:
         from_secret: ssh_ip
       N_PATH: /volume2/docker/drone/server-01/drone-runner-docker/apps/java/run-script
+      N_NODE_PATH: /volume2/docker/drone/server-01/drone-runner-docker/apps/node/run-script
     settings:
       host:
         from_secret: n_ip
@@ -82,6 +103,9 @@ steps:
         - cd $N_PATH/pageplug/
         - pwd
         - scp -r ./*  $S_USER@$S_IP:/www/wwwroot/pageplug/server/
+        - cd $N_NODE_PATH/pageplug/
+        - pwd
+        - scp -r ./*  $S_USER@$S_IP:/www/wwwroot/pageplug/client/
   - name: 开始部署
     image: appleboy/drone-ssh
     pull: if-not-exists
@@ -99,4 +123,4 @@ steps:
         - chmod +x ./scripts/start-dev-server.sh
         - ./scripts/start-dev-server.sh
 depends_on:
-  - 后端服务
+  - 服务构建
