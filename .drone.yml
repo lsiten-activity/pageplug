@@ -11,7 +11,7 @@ volumes:
       path: /volume2/docker/drone/server-01/drone-runner-docker/apps/java/run-script
   - name: node-run-script
     host:
-      path: /volume2/docker/drone/server-01/drone-runner-docker/apps/node/run-script
+      path: /volume2/docker/drone/server-01/drone-runner-docker/apps/node/build-dist
 steps:
   - name: 后端构建
     image: maven:3.8-openjdk-11
