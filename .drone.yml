@@ -33,7 +33,7 @@ steps:
       - mkdir -p /app/build/${DRONE_REPO_NAME} && cp -Rf ./scripts /app/build/${DRONE_REPO_NAME};
       - mkdir -p /app/build/${DRONE_REPO_NAME} && cp -Rf ./dev.env.template /app/build/${DRONE_REPO_NAME}/.env;
   - name: 前端构建
-    image: node:18
+    image: node:14
     pull: if-not-exists
     volumes:
       - name: node-run-script
@@ -42,7 +42,7 @@ steps:
       - pwd
       - ls -al
       - cd ./app/client
-      - rm -rf dist
+      - rm -rf dist yarn.lock
       - npm config set registry http://mirrors.cloud.tencent.com/npm/
       - yarn --ignore-engines
       - yarn build
