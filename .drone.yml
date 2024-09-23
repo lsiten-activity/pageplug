@@ -43,6 +43,7 @@ steps:
       - ls -al
       - cd ./app/client
       - rm -rf dist
+      - yarn --ignore-engines
       - yarn build
       - mkdir -p /app/node/build/${DRONE_REPO_NAME} && rm -rf /app/node/build/${DRONE_REPO_NAME}/*
       - mkdir -p /app/node/build/${DRONE_REPO_NAME} && cp -Rf ./dist /app/node/build/${DRONE_REPO_NAME};
