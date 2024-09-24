@@ -42,7 +42,7 @@ steps:
       - pwd
       - ls -al
       - cd ./app/client
-      - rm -rf dist yarn.lock
+      - rm -rf dist
       - npm config set registry https://registry.npmmirror.com
       - npm config set sass_binary_site https://npmmirror.com/mirrors/node-sass/
       - yarn
