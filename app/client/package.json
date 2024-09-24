@@ -30,7 +30,7 @@
     "@sentry/tracing": "^6.2.4",
     "@sentry/webpack-plugin": "^1.12.1",
     "@taroify/core": "^0.0.28-alpha.1",
-    "@tarojs/components": "^3.3.14",
+    "@tarojs/components": "3.3.14",
     "@types/chance": "^1.0.7",
     "@types/lodash": "^4.14.120",
     "@types/moment-timezone": "^0.5.10",
@@ -192,8 +192,10 @@
     "build-storybook": "build-storybook -s public",
     "postinstall": "patch-package"
   },
-  "resolution": {
-    "jest": "24.8.0"
+  "resolutions": {
+    "jest": "26.6.0",
+    "lru-cache": "^6.0.0",
+    "babel-loader": "8.1.0"
   },
   "eslintConfig": {
     "extends": "react-app",
@@ -243,7 +245,7 @@
     "@types/toposort": "^2.0.3",
     "@typescript-eslint/eslint-plugin": "^4.15.0",
     "@typescript-eslint/parser": "^4.15.0",
-    "babel-loader": "^8.1.0",
+    "babel-loader": "8.1.0",
     "babel-plugin-import": "^1.13.3",
     "babel-plugin-styled-components": "^1.10.7",
     "craco-babel-loader": "^0.1.4",

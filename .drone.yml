@@ -29,8 +29,8 @@ steps:
       - chmod +x build.sh
       - ./build.sh -DskipTests
       - mkdir -p /app/build/${DRONE_REPO_NAME} && rm -rf /app/build/${DRONE_REPO_NAME}/*
-      - mkdir -p /app/build/${DRONE_REPO_NAME} && cp -Rf ./dist /app/build/${DRONE_REPO_NAME};
-      - mkdir -p /app/build/${DRONE_REPO_NAME} && cp -Rf ./scripts /app/build/${DRONE_REPO_NAME};
+      - mkdir -p /app/build/${DRONE_REPO_NAME} && cp -Rf ./dist /app/build/${DRONE_REPO_NAME}
+      - mkdir -p /app/build/${DRONE_REPO_NAME} && cp -Rf ./scripts /app/build/${DRONE_REPO_NAME}
       - mkdir -p /app/build/${DRONE_REPO_NAME} && cp -Rf ./dev.env.template /app/build/${DRONE_REPO_NAME}/.env;
   - name: 前端构建
     image: node:14
@@ -43,11 +43,12 @@ steps:
       - ls -al
       - cd ./app/client
       - rm -rf dist yarn.lock
-      - npm config set registry http://mirrors.cloud.tencent.com/npm/
-      - yarn --ignore-engines
+      - npm config set registry https://registry.npmmirror.com
+      - npm config set sass_binary_site https://npmmirror.com/mirrors/node-sass/
+      - yarn
       - yarn build
       - mkdir -p /app/node/build/${DRONE_REPO_NAME} && rm -rf /app/node/build/${DRONE_REPO_NAME}/*
-      - mkdir -p /app/node/build/${DRONE_REPO_NAME} && cp -Rf ./dist /app/node/build/${DRONE_REPO_NAME};
+      - mkdir -p /app/node/build/${DRONE_REPO_NAME} && cp -Rf ./dist /app/node/build/${DRONE_REPO_NAME}/
   - name: 清空历史文件
     image: appleboy/drone-ssh
     pull: if-not-exists
